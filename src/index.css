@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Outfit:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --color-brand-dark: #0f2a2e;
+  --color-brand-darker: #0b2023;
+  --color-brand-blue: #2b4ad9;
+  --color-accent: #ffb606;
+  --color-light: #eef5f6;
+  --color-cream: #f1efe7;
+  --color-ink: #0f1c1e;
+  --color-muted: #6b7778;
+}
+
+@layer base {
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
+  }
+}
+
+@utility container-x {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/* Dark chalkboard background with hand-drawn school doodles + fine grain (files in /public) */
+@utility bg-doodle {
+  background-color: #162e33;
+  background-image:
+    url("/grain.svg"),
+    radial-gradient(ellipse at 90% 85%, rgb(0 0 0 / 0.28), transparent 55%),
+    radial-gradient(ellipse at 75% 0%, rgb(0 0 0 / 0.18), transparent 50%),
+    url("/doodles.svg");
+  background-size: 200px 200px, 100% 100%, 100% 100%, 860px 860px;
+  background-position: 0 0, 0 0, 0 0, 520px -60px;
+}
+
+/* Endless right-to-left logo strip (Partners). The track holds the logos twice, so
+   moving it by -50% lands exactly on the start again. */
+@theme {
+  --animate-marquee: marquee 30s linear infinite;
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
