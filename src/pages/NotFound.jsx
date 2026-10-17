@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
+import { Reveal } from "./Home";
 
 export default function NotFound() {
   return (
     <section className="py-32">
-      <div className="container-x text-center">
+      <Reveal className="container-x text-center">
         <p className="text-7xl font-extrabold text-accent">404</p>
         <h1 className="mt-4 text-3xl font-bold">Page not found</h1>
         <Link
@@ -12,7 +13,7 @@ export default function NotFound() {
         >
           Back to home
         </Link>
-      </div>
+      </Reveal>
     </section>
   );
 }

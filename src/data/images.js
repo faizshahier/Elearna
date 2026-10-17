@@ -3,7 +3,6 @@ export const unsplash = (id, w = 800) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
 export const images = {
-  heroStudent: unsplash("1544717305-2782549b5136", 900),
   promoLaptop: unsplash("1516321318423-f06f85e504b3"),
   promoVideoCall: unsplash("1588196749597-9ff075ee6b5b"),
   offerOne: unsplash("1434030216411-0b793f4b4173"),

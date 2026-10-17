@@ -133,6 +133,28 @@ export const courses = [
     lessons: 8,
     enrolled: "5k",
   },
+  {
+    id: 13,
+    category: "Design",
+    title: "Learn interactive Web Design by building real projects",
+    image: unsplash("1556761175-b413da4baf72"),
+    price: 79,
+    rating: 4.49,
+    reviews: "756",
+    lessons: 14,
+    enrolled: "9k",
+  },
+  {
+    id: 14,
+    category: "Design",
+    title: "Design systems and pattern libraries",
+    image: unsplash("1581291518857-4e27b48ff24e"),
+    price: 99,
+    rating: 5.0,
+    reviews: "1.2K",
+    lessons: 11,
+    enrolled: "6k",
+  },
 ];
 
 /* Tabs on the Home page */
@@ -144,6 +166,11 @@ export const allCourseCategories = [...courseCategories, "Marketing", "Writing"]
 export const formatPrice = (price) => (price === 0 ? "Free" : `$${price}`);
 
 export const getCourse = (id) => courses.find((c) => c.id === Number(id));
+
+/* Category pages: /category/design, /category/finance, … */
+export const categorySlug = (category) => category.toLowerCase();
+export const getCategory = (slug) =>
+  allCourseCategories.find((c) => c !== "All courses" && categorySlug(c) === slug);
 
 /* Extra info shown on the course details page (same for every demo course) */
 export const courseDetails = {

@@ -1,9 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import PhotoCta from "../components/course/PhotoCta";
-import PostCard from "../components/ui/PostCard";
-import SectionHeading from "../components/ui/SectionHeading";
 import { getPost, posts } from "../data/posts";
 import { formatDate } from "../utils/formatDate";
+import { PostCard } from "./Blog";
+import { Reveal, Stagger, StaggerItem } from "./Home";
 import NotFound from "./NotFound";
 
 const lorem =
@@ -19,18 +19,20 @@ export default function BlogPost() {
   return (
     <>
       <article>
-        <header className="bg-brand-dark pb-40 pt-20 text-white lg:pt-28">
-          <div className="container-x max-w-4xl text-center">
+        <header className="bg-brand-dark pb-40 pt-[calc(var(--header-h,0px)_+_5rem)] text-white lg:pt-[calc(var(--header-h,0px)_+_7rem)]">
+          <Reveal className="container-narrow max-w-4xl text-center">
             <p className="text-sm font-medium uppercase tracking-wider text-accent">{post.category}</p>
             <h1 className="mt-4 text-4xl font-semibold leading-tight sm:text-5xl">{post.title}</h1>
             <p className="mt-5 text-white/70">
               <time dateTime={post.date}>{formatDate(post.date)}</time> · 5 min read
             </p>
-          </div>
+          </Reveal>
         </header>
 
-        <div className="container-x max-w-4xl">
-          <img src={post.image.replace("w=800", "w=1400")} alt="" className="-mt-28 aspect-video w-full object-cover shadow-2xl" />
+        <div className="container-narrow max-w-4xl">
+          <Reveal className="-mt-28">
+            <img src={post.image.replace("w=800", "w=1400")} alt="" className="aspect-video w-full object-cover shadow-2xl" />
+          </Reveal>
           <div className="space-y-6 py-14 text-lg leading-relaxed text-muted">
             <p>{lorem}</p>
             <h2 className="pt-4 text-2xl font-semibold text-ink">Why it matters</h2>
@@ -55,12 +57,17 @@ export default function BlogPost() {
 
       <section className="bg-light py-20">
         <div className="container-x">
-          <SectionHeading eyebrow="Keep reading" title="More articles" />
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal className="max-w-2xl 2xl:max-w-4xl">
+            <p className="mb-3 text-xs font-medium uppercase tracking-wider">Keep reading</p>
+            <h2 className="text-3xl font-semibold leading-tight sm:text-4xl 2xl:text-[56px]">More articles</h2>
+          </Reveal>
+          <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {more.map((p) => (
-              <PostCard key={p.slug} post={p} />
+              <StaggerItem key={p.slug} className="h-full">
+                <PostCard post={p} />
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 

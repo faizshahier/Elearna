@@ -1,36 +1,64 @@
 import { Link } from "react-router-dom";
-import CtaBanner from "../components/home/CtaBanner";
-import PageHero from "../components/ui/PageHero";
-import SectionHeading from "../components/ui/SectionHeading";
 import { events } from "../data/events";
 import { unsplash } from "../data/images";
 import { formatDate } from "../utils/formatDate";
+import { CtaBanner, Reveal, Stagger, StaggerItem } from "./Home";
 
-/* Photo tile; event details slide up on hover / keyboard focus (always shown on touch screens) */
+/*
+ * Event card from the design: just the photo by default. On hover (or keyboard focus) the photo
+ * shrinks to the top, a date box appears top-right, a yellow "See event details" strip scrolls
+ * right → left, and the location • time + title show below. Touch screens always show the details.
+ */
+const strip = Array.from({ length: 6 }, () => "See event details");
+const reveal = "group-hover:opacity-100 group-focus-visible:opacity-100 [@media(hover:none)]:opacity-100";
+
 function EventCard({ event }) {
   const d = new Date(event.date + "T00:00:00");
   return (
     <Link
       to="/contact"
       aria-label={`${event.title}, ${formatDate(event.date)}. Register via contact page`}
-      className="group relative block aspect-[4/5] overflow-hidden bg-brand-dark"
+      className="group relative flex aspect-[513/587] flex-col overflow-hidden rounded bg-white"
     >
-      <img src={event.image} alt="" loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+      {/* photo: full card → top part on hover */}
+      <div className="h-full shrink-0 overflow-hidden transition-[height] duration-500 ease-out group-hover:h-[68%] group-focus-visible:h-[68%] [@media(hover:none)]:h-[68%]">
+        <img src={event.image} alt="" loading="lazy" className="h-full w-full object-cover" />
+      </div>
 
-      <span className="absolute left-5 top-5 rounded bg-white px-3 py-2 text-center leading-none shadow">
-        <span className="block font-heading text-2xl font-semibold">{d.getDate()}</span>
-        <span className="mt-1 block text-[11px] uppercase tracking-wider text-muted">
+      {/* date box */}
+      <span
+        className={`absolute right-0 top-0 flex items-center gap-2 rounded-bl bg-white px-5 py-3 opacity-0 transition-opacity duration-300 ${reveal}`}
+      >
+        <span className="font-heading text-4xl font-medium leading-none">{d.getDate()}</span>
+        <span className="text-sm uppercase leading-tight text-muted">
           {d.toLocaleDateString("en-US", { month: "short" })}
+          <br />
+          {d.getFullYear()}
         </span>
       </span>
 
-      <div className="absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 pt-16 text-white transition duration-300 group-hover:translate-y-0 group-focus-visible:translate-y-0 [@media(hover:none)]:translate-y-0">
-        <p className="text-xs uppercase tracking-wider text-accent">{event.location}</p>
-        <h3 className="mt-2 text-xl font-semibold leading-snug">{event.title}</h3>
-        <p className="mt-2 text-sm text-white/70">
-          {formatDate(event.date)} · {event.time}
+      {/* yellow scrolling strip */}
+      <div className={`shrink-0 overflow-hidden bg-accent py-2.5 opacity-0 transition-opacity duration-300 ${reveal}`} aria-hidden="true">
+        <div className="flex w-max animate-marquee [animation-duration:12s]">
+          {[0, 1].map((copy) => (
+            <span key={copy} className="flex shrink-0">
+              {strip.map((text, i) => (
+                <span key={i} className="flex items-center whitespace-nowrap font-heading text-lg font-medium text-ink 2xl:text-xl">
+                  {text}
+                  <span className="mx-5 text-xs">●</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* location • time + title */}
+      <div className={`flex flex-1 flex-col items-center justify-center px-6 text-center opacity-0 transition-opacity duration-300 ${reveal}`}>
+        <p className="text-sm uppercase tracking-wide text-muted 2xl:text-base">
+          {event.location} <span className="mx-2">•</span> {event.time}
         </p>
-        <span className="mt-4 inline-block rounded bg-accent px-4 py-2 text-sm font-medium text-ink">Register now</span>
+        <h3 className="mt-3 text-xl font-medium leading-snug 2xl:text-2xl">{event.title}</h3>
       </div>
     </Link>
   );
@@ -39,25 +67,37 @@ function EventCard({ event }) {
 export default function Events() {
   return (
     <>
-      <PageHero image={unsplash("1540575467063-178a50c2df87", 1800)} eyebrow="Enjoy with" title="Great upcoming events for our institute" />
+      {/* photo hero */}
+      <section className="relative overflow-hidden bg-brand-dark">
+        <img src={unsplash("1540575467063-178a50c2df87", 1800)} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-brand-darker/70" />
+        <Reveal className="container-x relative pb-28 pt-[calc(var(--header-h,0px)_+_7rem)] text-white lg:pb-40 lg:pt-[calc(var(--header-h,0px)_+_10rem)]">
+          <p className="text-sm font-medium uppercase tracking-wider">Enjoy with</p>
+          <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-6xl">Great upcoming events for our institute</h1>
+        </Reveal>
+      </section>
 
       <section className="py-20 lg:py-28">
         <div className="container-x">
-          <SectionHeading
-            center
-            eyebrow="Our event"
-            title="Professional online events"
-            text="Lorem ipsum dolor sit amet consectetur. Congue sit pellentesque eu scelerisque urna a porttitor. Massa nec ipsum sed etiam et facilisis bibendum."
-          />
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Reveal className="max-w-2xl 2xl:max-w-4xl mx-auto text-center">
+            <p className="mb-3 text-xs font-medium uppercase tracking-wider">Our event</p>
+            <h2 className="text-3xl font-semibold leading-tight sm:text-4xl 2xl:text-[56px]">Professional online events</h2>
+            <p className="mt-4 leading-relaxed text-muted">Lorem ipsum dolor sit amet consectetur. Congue sit pellentesque eu scelerisque urna a porttitor. Massa nec ipsum sed etiam et facilisis bibendum.</p>
+          </Reveal>
+          <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {/* min-w-0: stops the long scrolling strip from stretching the phone column */}
             {events.map((e) => (
-              <EventCard key={e.id} event={e} />
+              <StaggerItem key={e.id} className="min-w-0">
+                <EventCard event={e} />
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
-      <CtaBanner />
+      <Reveal>
+        <CtaBanner />
+      </Reveal>
     </>
   );
 }

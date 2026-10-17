@@ -23,3 +23,15 @@ export const testimonials = [
     image: unsplash("1438761681033-6461ffad8d80"),
   },
 ];
+
+/* About page slider starts with Jim Adams (from the About design) */
+export const aboutTestimonials = [
+  {
+    quote:
+      "Lorem ipsum dolor sit amet consectetur. Adipiscing eget risus tempus facilisis scelerisque vitae consectetur vitae. Amet faucibus venenatis donec mattis. Morbi placerat eleifend malesuada sed semper quis.",
+    name: "Jim Adams",
+    role: "Designer",
+    image: unsplash("1506794778202-cad84cf45f1d"),
+  },
+  ...testimonials,
+];

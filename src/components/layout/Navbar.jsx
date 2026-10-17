@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/logo.svg";
+import CartDrawer from "./CartDrawer";
+import CoursesMegaMenu from "./CoursesMegaMenu";
 
 const navItems = [
   {
     label: "Home",
-    children: [
-      { label: "Home", to: "/" },
-    ],
+    children: [{ label: "Home", to: "/" }],
   },
   {
     label: "Courses",
+    mega: true, // desktop shows CoursesMegaMenu; these links are used on mobile + for the active state
     children: [
       { label: "All Courses", to: "/courses" },
       { label: "Course Details", to: "/courses/1" },
@@ -20,31 +21,20 @@ const navItems = [
     label: "Pages",
     children: [
       { label: "About ", to: "/about" },
+      { label: "Career", to: "/career" },
+      { label: "Courses", to: "/pages/courses" },
       { label: "Team", to: "/team" },
       { label: "Events", to: "/events" },
       { label: "Pricing", to: "/pricing" },
       { label: "FAQ", to: "/faq" },
     ],
   },
-  {
-    label: "Blog",
-    children: [
-      { label: "All Posts", to: "/blog" },
-      { label: "Blog Details", to: "/blog/improve-knowledge-retention-with-visual-learning" },
-    ],
-  },
-  {
-    label: "Contact",
-    children: [
-      { label: "Contact Us", to: "/contact" },
-      { label: "Login", to: "/login" },
-      { label: "Register", to: "/register" },
-    ],
-  },
+  // Plain links: no arrow, no dropdown
+  { label: "Blog", to: "/blog" },
+  { label: "Contact", to: "/contact" },
 ];
 
-const linkClass = ({ isActive }) =>
-  `transition-colors hover:text-accent ${isActive ? "text-accent" : "text-white"}`;
+const linkClass = ({ isActive }) => `transition-colors hover:text-accent ${isActive ? "text-accent" : "text-white"}`;
 
 function Chevron() {
   return (
@@ -59,12 +49,12 @@ const isGroupActive = (item, pathname) =>
   item.children.some((c) => pathname === c.to || (c.to !== "/" && pathname.startsWith(c.to + "/")));
 
 const childClass = ({ isActive }) =>
-  `block rounded-md px-3 py-2 hover:bg-light hover:text-brand-dark ${isActive ? "bg-light font-semibold text-brand-dark" : "text-ink"}`;
+  `block px-4 py-1.5 transition-colors hover:text-accent ${isActive ? "text-accent" : "text-ink"}`;
 
-/* Cart icon with item count (no cart yet, so it always shows 0) */
-function CartLink({ onClick }) {
+/* Cart icon with item count (no cart yet, so it always shows 0); opens the Your Cart panel */
+function CartButton({ onClick }) {
   return (
-    <Link to="/courses" onClick={onClick} aria-label="Cart, 0 items" className="relative text-white hover:text-accent">
+    <button onClick={onClick} aria-label="Open cart, 0 items" className="relative text-white hover:text-accent">
       <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.3} aria-hidden="true">
         <path strokeLinejoin="round" d="M5 8h14l-1.2 13H6.2L5 8z" />
         <path strokeLinecap="round" d="M9 10V6.5a3 3 0 0 1 6 0V10" />
@@ -72,53 +62,116 @@ function CartLink({ onClick }) {
       <span className="absolute -right-3.5 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-accent text-sm text-ink">
         0
       </span>
-    </Link>
+    </button>
   );
 }
 
-export default function Navbar() {
+/* Thin info row above the menu (only on pages with an `overlay` header) */
+function TopBar() {
+  return (
+    <div className="hidden border-b border-white/15 md:block">
+      <div className="container-x flex h-11 items-center justify-between text-sm text-white 2xl:h-[52px] 2xl:text-lg">
+        <p>
+          Are you interested in online coaching?{" "}
+          <Link to="/contact" className="hover:text-accent">
+            Contact us.
+          </Link>
+        </p>
+        <div className="flex gap-9">
+          <a href="mailto:support@example.com" className="hover:text-accent">
+            support@example.com
+          </a>
+          <a href="tel:+18881234567" className="hover:text-accent">
+            Call: (888) 123 4567
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/*
+ * overlay = see-through header laid over the page's photo hero (course details page).
+ * It turns solid once the page is scrolled or the mobile menu is open; the info row stays visible.
+ */
+export default function Navbar({ overlay = false, topBar = true }) {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const closeCart = useCallback(() => setCartOpen(false), []);
   const close = () => {
     setOpen(false);
     setOpenGroup(null);
   };
 
+  useEffect(() => {
+    if (!overlay) return;
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [overlay]);
+
+  const solid = !overlay || scrolled || open;
+
   return (
-    <header className="sticky top-0 z-50 bg-brand-dark">
-      <nav className="flex h-20 items-center justify-between px-4 sm:px-6 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-3">
+    <header
+      className={
+        overlay
+          ? `fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${solid ? "bg-brand-dark shadow-lg" : "bg-transparent"}`
+          : "sticky top-0 z-50 bg-brand-dark"
+      }
+    >
+      {overlay && topBar && <TopBar />}
+      <nav
+        className={`flex h-20 items-center justify-between lg:grid lg:grid-cols-[1fr_auto_1fr] ${
+          overlay ? "container-x 2xl:h-[88px]" : "px-4 sm:px-6 lg:px-3"
+        }`}
+      >
         <Link to="/" onClick={close} className="shrink-0">
           <img src={logo} alt="Elearna" className="h-8 w-auto" />
         </Link>
 
         {/* Desktop menu */}
-        <ul className="hidden items-center gap-7 text-lg font-medium lg:flex xl:gap-12 xl:text-xl 2xl:gap-14">
-          {navItems.map((item) => (
-            <li key={item.label} className="group relative">
-              <button
-                aria-haspopup="true"
-                className={`flex items-center gap-2 py-7 transition-colors hover:text-accent ${
-                  isGroupActive(item, pathname) ? "text-accent" : "text-white"
-                }`}
-              >
-                {item.label} <Chevron />
-              </button>
-              <ul className="invisible absolute left-0 top-full w-52 translate-y-2 rounded-lg bg-white p-2 text-sm opacity-0 shadow-xl transition-[opacity,translate] group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                {item.children.map((child) => (
-                  <li key={child.to}>
-                    <NavLink to={child.to} end className={childClass}>
-                      {child.label}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
+        <ul className="relative hidden items-center gap-7 text-lg font-medium lg:flex xl:gap-12 xl:text-xl 2xl:gap-14">
+          {navItems.map((item) =>
+            item.to ? (
+              <li key={item.label}>
+                <NavLink to={item.to} className={(state) => `block py-7 ${linkClass(state)}`}>
+                  {item.label}
+                </NavLink>
+              </li>
+            ) : (
+              <li key={item.label} className={item.mega ? "group" : "group relative"}>
+                <button
+                  aria-haspopup="true"
+                  className={`flex items-center gap-2 py-7 transition-colors hover:text-accent ${
+                    isGroupActive(item, pathname) ? "text-accent" : "text-white"
+                  }`}
+                >
+                  {item.label} <Chevron />
+                </button>
+                {item.mega ? (
+                  <CoursesMegaMenu />
+                ) : (
+                  <ul className="invisible absolute left-1/2 top-full w-40 -translate-x-1/2 translate-y-2 border-b-4 border-accent bg-white py-2 text-center text-sm opacity-0 shadow-xl transition-[opacity,translate] group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                    {item.children.map((child) => (
+                      <li key={child.to}>
+                        <NavLink to={child.to} end className={childClass}>
+                          {child.label}
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ),
+          )}
         </ul>
 
         <div className="hidden items-center justify-end gap-8 text-lg font-medium text-white lg:flex xl:gap-14 xl:text-xl">
-          <CartLink />
+          <CartButton onClick={() => setCartOpen(true)} />
           <div className="flex items-center">
             <Link to="/login" className="pr-3 hover:text-accent">
               Login
@@ -132,13 +185,13 @@ export default function Navbar() {
 
         {/* Mobile cart + toggle */}
         <div className="flex items-center gap-6 lg:hidden">
-          <CartLink onClick={close} />
-          <button
-            className="text-white"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
+          <CartButton
+            onClick={() => {
+              close();
+              setCartOpen(true);
+            }}
+          />
+          <button className="text-white" onClick={() => setOpen((v) => !v)} aria-label="Toggle menu" aria-expanded={open}>
             <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               {open ? (
                 <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
@@ -154,28 +207,36 @@ export default function Navbar() {
       {open && (
         <div className="border-t border-white/10 bg-brand-dark lg:hidden">
           <ul className="container-x flex flex-col py-4 text-white">
-            {navItems.map((item) => (
-              <li key={item.label}>
-                <button
-                  className={`flex w-full items-center justify-between py-3 ${isGroupActive(item, pathname) ? "text-accent" : ""}`}
-                  aria-expanded={openGroup === item.label}
-                  onClick={() => setOpenGroup(openGroup === item.label ? null : item.label)}
-                >
-                  {item.label} <Chevron />
-                </button>
-                {openGroup === item.label && (
-                  <ul className="mb-2 border-l border-white/20 pl-4">
-                    {item.children.map((child) => (
-                      <li key={child.to}>
-                        <NavLink to={child.to} end onClick={close} className={linkClass}>
-                          <span className="block py-2 text-sm">{child.label}</span>
-                        </NavLink>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
+            {navItems.map((item) =>
+              item.to ? (
+                <li key={item.label}>
+                  <NavLink to={item.to} onClick={close} className={(state) => `block py-3 ${linkClass(state)}`}>
+                    {item.label}
+                  </NavLink>
+                </li>
+              ) : (
+                <li key={item.label}>
+                  <button
+                    className={`flex w-full items-center justify-between py-3 ${isGroupActive(item, pathname) ? "text-accent" : ""}`}
+                    aria-expanded={openGroup === item.label}
+                    onClick={() => setOpenGroup(openGroup === item.label ? null : item.label)}
+                  >
+                    {item.label} <Chevron />
+                  </button>
+                  {openGroup === item.label && (
+                    <ul className="mb-2 border-l border-white/20 pl-4">
+                      {item.children.map((child) => (
+                        <li key={child.to}>
+                          <NavLink to={child.to} end onClick={close} className={linkClass}>
+                            <span className="block py-2 text-sm">{child.label}</span>
+                          </NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ),
+            )}
             <li className="mt-3 flex gap-3">
               <Link to="/login" onClick={close} className="flex-1 rounded-md border border-white/30 py-2 text-center">
                 Login
@@ -187,6 +248,7 @@ export default function Navbar() {
           </ul>
         </div>
       )}
+      <CartDrawer open={cartOpen} onClose={closeCart} />
     </header>
   );
 }

@@ -1,5 +1,5 @@
 import { images, unsplash } from "../../data/images";
-import SectionHeading from "../ui/SectionHeading";
+import { Reveal, Stagger, StaggerItem } from "../../pages/Home";
 
 const stats = [
   { value: "1.5K", label: "Finish seasons" },
@@ -11,18 +11,18 @@ const stats = [
 export default function OurStory() {
   return (
     <>
-      <section className="bg-brand-dark pb-28 pt-20 text-center text-white lg:pb-40 lg:pt-28">
-        <div className="container-x">
-          <p className="text-sm font-medium uppercase tracking-wider">About us</p>
-          <h1 className="mx-auto mt-4 max-w-xl text-4xl font-semibold leading-tight sm:text-6xl">
+      <section className="bg-doodle pb-28 pt-[calc(var(--header-h,0px)_+_5rem)] text-center text-white lg:pb-40 lg:pt-[calc(var(--header-h,0px)_+_7rem)]">
+        <Reveal className="container-x">
+          <p className="text-sm font-medium uppercase tracking-wider 2xl:text-base">About us</p>
+          <h1 className="mx-auto mt-4 max-w-2xl text-4xl font-semibold leading-[1.15] sm:text-6xl 2xl:mt-6 2xl:text-[64px]">
             You’re sincerely determined to grow
           </h1>
-        </div>
+        </Reveal>
       </section>
 
       <section className="pb-20">
         <div className="container-x grid items-center gap-16 lg:grid-cols-2">
-          <div className="relative -mt-16 lg:-mt-24">
+          <Reveal from="left" className="relative -mt-16 lg:-mt-24">
             <img
               src={unsplash("1543269865-cbf427effbad", 1000)}
               alt="Two students studying together"
@@ -40,23 +40,26 @@ export default function OurStory() {
                 <span className="text-accent">★★★★★</span> 4.94 (625)
               </p>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="pt-8 lg:pt-24">
-            <SectionHeading
-              eyebrow="Our story"
-              title="Limitless learning and get more possibilities"
-              text="Lorem ipsum dolor sit amet consectetur. Sed ac non suspendisse in maecenas scelerisque imperdiet nec. Pellentesque mauris amet ligula eget malesuada ullamcorper nibh. Etiam suspendisse pretium est elementum elementum rhoncus."
-            />
-            <div className="mt-10 flex flex-wrap gap-y-6 divide-gray-300 sm:divide-x">
+          <Reveal className="pt-8 lg:pt-24">
+            <div className="max-w-2xl 2xl:max-w-4xl">
+              <p className="mb-3 text-xs font-medium uppercase tracking-wider">Our story</p>
+              <h2 className="text-3xl font-semibold leading-tight sm:text-4xl 2xl:text-[56px]">Limitless learning and get more possibilities</h2>
+              <p className="mt-4 leading-relaxed text-muted">
+                Lorem ipsum dolor sit amet consectetur. Sed ac non suspendisse in maecenas scelerisque imperdiet nec. Pellentesque mauris amet
+                ligula eget malesuada ullamcorper nibh. Etiam suspendisse pretium est elementum elementum rhoncus.
+              </p>
+            </div>
+            <Stagger className="mt-10 flex flex-wrap gap-y-6 divide-gray-300 sm:divide-x">
               {stats.map((s) => (
-                <div key={s.label} className="pr-8 first:pl-0 sm:px-8">
+                <StaggerItem key={s.label} className="pr-8 first:pl-0 sm:px-8">
                   <p className="font-heading text-4xl font-semibold sm:text-5xl">{s.value}</p>
                   <p className="mt-2 text-sm font-medium uppercase tracking-wider">{s.label}</p>
-                </div>
+                </StaggerItem>
               ))}
-            </div>
-          </div>
+            </Stagger>
+          </Reveal>
         </div>
       </section>
     </>

@@ -2,16 +2,16 @@ import { useState } from "react";
 import { courseDetails } from "../../data/courses";
 import { unsplash } from "../../data/images";
 import { instructors } from "../../data/instructors";
-import Accordion from "../ui/Accordion";
-import Button from "../ui/Button";
-import InstructorCard from "../ui/InstructorCard";
+import { Accordion } from "../../pages/Faq";
+import { Reveal } from "../../pages/Home";
+import { InstructorCard } from "../../pages/Team";
 
 const lorem =
   "Lorem ipsum dolor sit amet consectetur. Et facilisis nunc quam quam etiam donec pellentesque ut. Nisl pellentesque at aliquam scelerisque non consequat amet curabitur. Imperdiet habitant purus pulvinar diam. Molestie pharetra morbi eu odio volutpat. Cursus velit elit senectus auctor vitae tristique velit. Feugiat consequat diam ipsum suspendisse vestibulum ipsum malesuada.";
 
 function FeatureList({ small = false }) {
   return (
-    <ul className={`list-disc space-y-1.5 pl-5 text-muted ${small ? "text-sm" : ""}`}>
+    <ul className={`list-disc space-y-1.5 pl-5 text-muted ${small ? "text-sm" : "2xl:space-y-0 2xl:text-xl 2xl:leading-[1.8]"}`}>
       {courseDetails.features.map((f) => (
         <li key={f}>{f}</li>
       ))}
@@ -22,14 +22,14 @@ function FeatureList({ small = false }) {
 function Overview() {
   return (
     <div>
-      <h2 className="text-3xl font-semibold">Course description</h2>
-      <p className="mt-4 leading-relaxed text-muted">{lorem}</p>
-      <h3 className="mt-10 text-xl font-medium">Main features</h3>
+      <h2 className="text-3xl font-semibold 2xl:text-[44px]">Course description</h2>
+      <p className="mt-4 leading-relaxed text-muted 2xl:mt-5 2xl:text-xl 2xl:leading-[1.8]">{lorem}</p>
+      <h3 className="mt-10 text-xl font-medium 2xl:mt-16 2xl:text-[28px]">Main features</h3>
       <div className="mt-4">
         <FeatureList />
       </div>
-      <h3 className="mt-10 text-xl font-medium">What is the target audience?</h3>
-      <p className="mt-4 leading-relaxed text-muted">
+      <h3 className="mt-10 text-xl font-medium 2xl:mt-16 2xl:text-[28px]">What is the target audience?</h3>
+      <p className="mt-4 leading-relaxed text-muted 2xl:mt-5 2xl:text-xl 2xl:leading-[1.8]">
         Lorem ipsum dolor sit amet consectetur. Nibh urna quis tempus elit ultrices amet. Convallis facilisis duis vivamus ut
         suspendisse imperdiet vel eleifend maecenas. Mi senectus eu nec mattis lacus dolor in diam cursus.
       </p>
@@ -104,8 +104,8 @@ function Curriculum({ course }) {
 function Instructor() {
   return (
     <div>
-      <h2 className="text-3xl font-semibold">Course instructor</h2>
-      <p className="mt-4 leading-relaxed text-muted">{lorem}</p>
+      <h2 className="text-3xl font-semibold 2xl:text-[44px]">Course instructor</h2>
+      <p className="mt-4 leading-relaxed text-muted 2xl:mt-5 2xl:text-xl 2xl:leading-[1.8]">{lorem}</p>
       <div className="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4">
         {instructors.slice(0, 4).map((p) => (
           <InstructorCard key={p.name} person={p} />
@@ -118,8 +118,8 @@ function Instructor() {
 function Faq() {
   return (
     <div>
-      <h2 className="text-3xl font-semibold">Frequently asked questions</h2>
-      <p className="mt-4 leading-relaxed text-muted">{lorem}</p>
+      <h2 className="text-3xl font-semibold 2xl:text-[44px]">Frequently asked questions</h2>
+      <p className="mt-4 leading-relaxed text-muted 2xl:mt-5 2xl:text-xl 2xl:leading-[1.8]">{lorem}</p>
       <div className="mt-8">
         <Accordion items={courseDetails.faqs} />
       </div>
@@ -143,7 +143,7 @@ function Query({ course }) {
   return (
     <div>
       <div className="mx-auto max-w-xl text-center">
-        <h2 className="text-3xl font-semibold">Have any questions about this course?</h2>
+        <h2 className="text-3xl font-semibold 2xl:text-[44px]">Have any questions about this course?</h2>
         <p className="mt-4 text-sm leading-relaxed text-muted">
           Send us your question and our team will reply by email within one working day.
         </p>
@@ -175,7 +175,12 @@ function Query({ course }) {
             Save information for next time.
           </label>
           <div>
-            <Button type="submit">Send Your Query</Button>
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center rounded bg-brand-dark px-7 py-3 text-sm font-medium text-white transition hover:bg-brand-darker"
+            >
+              Send Your Query
+            </button>
           </div>
         </form>
       )}
@@ -189,7 +194,7 @@ export default function CourseTabs({ course }) {
   const [active, setActive] = useState("Overview");
 
   return (
-    <section className="container-x py-20">
+    <Reveal as="section" className="container-x pb-20 pt-20 2xl:pt-[150px]">
       <div className="mx-auto flex w-fit max-w-full overflow-x-auto bg-light" role="tablist">
         {tabs.map((t) => (
           <button
@@ -197,7 +202,7 @@ export default function CourseTabs({ course }) {
             role="tab"
             aria-selected={active === t}
             onClick={() => setActive(t)}
-            className={`shrink-0 px-6 py-3 text-sm transition sm:px-9 ${
+            className={`shrink-0 px-6 py-3 text-sm transition sm:px-9 lg:text-base 2xl:px-12 2xl:py-[18px] 2xl:text-xl ${
               active === t ? "rounded bg-brand-dark text-white" : "hover:text-brand-blue"
             }`}
           >
@@ -206,13 +211,13 @@ export default function CourseTabs({ course }) {
         ))}
       </div>
 
-      <div className="mt-14" role="tabpanel">
+      <div className="mt-14 2xl:mt-[120px]" role="tabpanel">
         {active === "Overview" && <Overview />}
         {active === "Curriculum" && <Curriculum course={course} />}
         {active === "Instructor" && <Instructor />}
         {active === "FAQ" && <Faq />}
         {active === "Query" && <Query course={course} />}
       </div>
-    </section>
+    </Reveal>
   );
 }

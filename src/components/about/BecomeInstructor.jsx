@@ -1,22 +1,23 @@
 import { images, unsplash } from "../../data/images";
-import Button from "../ui/Button";
+import { Link } from "react-router-dom";
+import { Reveal } from "../../pages/Home";
 
 export default function BecomeInstructor() {
   return (
     <section className="overflow-hidden py-20 lg:py-28">
       <div className="container-x grid items-center gap-14 lg:grid-cols-2">
-        <div className="order-2 lg:order-1 lg:text-right">
+        <Reveal from="left" className="order-2 lg:order-1 lg:text-right">
           <h2 className="text-4xl font-semibold sm:text-5xl">Became an instructor</h2>
           <p className="mt-5 leading-relaxed text-muted lg:ml-auto lg:max-w-lg">
             Lorem ipsum dolor sit amet consectetur. Sed ultricies fames scelerisque urna quis semper amet. Nisl tincidunt
             tortor nullam est nec commodo orci dictum in. Lorem consectetur donec purus sagittis.
           </p>
-          <Button to="/contact" className="mt-8 px-10">
+          <Link to="/contact" className="mt-8 inline-flex items-center justify-center rounded py-3 text-sm font-medium transition bg-brand-dark px-10 text-white hover:bg-brand-darker">
             Start Teaching Today
-          </Button>
-        </div>
+          </Link>
+        </Reveal>
 
-        <div className="relative order-1 mx-auto w-full max-w-md lg:order-2">
+        <Reveal className="relative order-1 mx-auto w-full max-w-md lg:order-2">
           <div className="aspect-square overflow-hidden rounded-full border-[16px] border-accent bg-accent">
             <img
               src={unsplash("1531123897727-8f129e1688ce", 800) + "&crop=faces"}
@@ -38,7 +39,7 @@ export default function BecomeInstructor() {
               <span className="text-accent">★★★★★</span> 4.94 (625)
             </p>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
