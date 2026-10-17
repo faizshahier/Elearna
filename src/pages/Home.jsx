@@ -613,13 +613,15 @@ function TopCourses() {
           </div>
         </Reveal>
 
-        <Stagger className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
             {list.map((course) => (
               <motion.div
                 key={course.id}
                 layout
                 variants={itemVariants}
+                initial="hidden"
+                animate="show"
                 exit={{ opacity: 0, scale: 0.92, transition: { duration: 0.25 } }}
                 className="h-full [&>div]:h-full"
               >
@@ -627,7 +629,7 @@ function TopCourses() {
               </motion.div>
             ))}
           </AnimatePresence>
-        </Stagger>
+        </div>
         {list.length === 0 && <p className="mt-10 text-center text-muted">No courses in this category yet.</p>}
 
         <Reveal as="p" className="mx-auto mt-14 w-fit rounded-full bg-brand-dark px-8 py-3 text-center text-sm text-white">
@@ -640,6 +642,7 @@ function TopCourses() {
     </section>
   );
 }
+
 
 const stats = [
   { value: "70M", label: "Successful students" },
